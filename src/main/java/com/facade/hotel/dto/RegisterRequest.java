@@ -18,13 +18,16 @@ public class RegisterRequest {
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "El correo no es valido")
+    @Size(max = 254, message = "El correo no puede superar 254 caracteres")
     private String email;
 
     @NotBlank(message = "La contrasena es obligatoria")
     @StrongPassword
+    @Size(max = 72, message = "La contrasena no puede superar 72 caracteres")
     private String password;
 
     @NotBlank(message = "Debes confirmar la contrasena")
+    @Size(max = 72, message = "La contrasena no puede superar 72 caracteres")
     private String confirmPassword;
 
     public String getFullName() {

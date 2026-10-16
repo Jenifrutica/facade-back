@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -14,11 +15,14 @@ import java.time.LocalDate;
 public class ReservationRequest {
 
     @NotBlank(message = "El nombre del huesped es obligatorio")
+    @Size(min = 3, max = 80, message = "El nombre debe tener entre 3 y 80 caracteres")
     private String guestName;
 
     @Email(message = "El correo no es valido")
+    @Size(max = 254, message = "El correo no puede superar 254 caracteres")
     private String guestEmail;
 
+    @Size(max = 30, message = "El documento no puede superar 30 caracteres")
     private String guestDocument;
 
     @NotNull(message = "El tipo de habitacion es obligatorio")
