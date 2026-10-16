@@ -17,8 +17,12 @@ public class Invoice {
     private final BigDecimal total;
 
     public Invoice(String number, List<InvoiceLine> lines) {
+        this(number, Instant.now(), lines);
+    }
+
+    public Invoice(String number, Instant issuedAt, List<InvoiceLine> lines) {
         this.number = number;
-        this.issuedAt = Instant.now();
+        this.issuedAt = issuedAt;
         this.lines = new ArrayList<>(lines);
         this.total = this.lines.stream()
                 .map(InvoiceLine::getSubtotal)

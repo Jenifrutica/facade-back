@@ -6,13 +6,9 @@ import com.facade.hotel.dto.ReservationRequest;
 import com.facade.hotel.dto.ReservationView;
 import com.facade.hotel.dto.RoomView;
 import com.facade.hotel.exception.ConflictException;
-import com.facade.hotel.subsystem.AccessService;
-import com.facade.hotel.subsystem.BillingService;
-import com.facade.hotel.subsystem.ExtraServiceService;
-import com.facade.hotel.subsystem.RateService;
-import com.facade.hotel.subsystem.RoomService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,19 +17,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SpringBootTest
 class HotelFacadeTest {
 
+    @Autowired
     private HotelFacade facade;
-
-    @BeforeEach
-    void setUp() {
-        facade = new HotelFacade(
-                new RoomService(),
-                new RateService(),
-                new ExtraServiceService(),
-                new BillingService(),
-                new AccessService());
-    }
 
     private ReservationRequest request(RoomType type, LocalDate in, LocalDate out) {
         ReservationRequest request = new ReservationRequest();
@@ -106,6 +94,11 @@ class HotelFacadeTest {
         assertThat(checkedOut.getStatus()).isEqualTo("CHECKED_OUT");
         assertThat(checkedOut.getInvoice()).isNotNull();
         assertThat(checkedOut.getInvoice().getTotal()).isPositive();
+
+        // Persisted state is rehydrated correctly.
+        ReservationView reloaded = facade.getReservation(created.getId());
+        assertThat(reloaded.getStatus()).isEqualTo("CHECKED_OUT");
+        assertThat(reloaded.getInvoice().getNumber()).isEqualTo(checkedOut.getInvoice().getNumber());
     }
 
     @Test

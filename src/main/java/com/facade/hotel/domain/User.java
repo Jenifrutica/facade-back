@@ -15,11 +15,15 @@ public class User {
     private final Instant createdAt;
 
     public User(String fullName, String email, String passwordHash) {
-        this.id = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), fullName, email, passwordHash, Instant.now());
+    }
+
+    public User(String id, String fullName, String email, String passwordHash, Instant createdAt) {
+        this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.createdAt = Instant.now();
+        this.createdAt = createdAt;
     }
 
     public String getId() {

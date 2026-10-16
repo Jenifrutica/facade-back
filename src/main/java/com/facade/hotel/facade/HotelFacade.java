@@ -119,6 +119,7 @@ public class HotelFacade {
         }
         ExtraService service = extraServiceService.build(type, reservation.getNights());
         reservation.addExtraService(service);
+        roomService.save(reservation);
         return toView(reservation);
     }
 
@@ -132,6 +133,7 @@ public class HotelFacade {
         }
         reservation.assignAccessKey(accessService.issueKey());
         reservation.checkIn();
+        roomService.save(reservation);
         return toView(reservation);
     }
 
@@ -146,6 +148,7 @@ public class HotelFacade {
         }
         Invoice invoice = billingService.generate(reservation, true);
         reservation.checkOut(invoice);
+        roomService.save(reservation);
         return toView(reservation);
     }
 
@@ -180,6 +183,9 @@ public class HotelFacade {
         }
         if (!checkOut.isAfter(checkIn)) {
             throw new BadRequestException("La fecha de salida debe ser posterior a la de entrada");
+        }
+        if (checkIn.isAfter(LocalDate.now().plusYears(1))) {
+            throw new BadRequestException("La fecha de entrada no puede superar un ano desde hoy");
         }
     }
 

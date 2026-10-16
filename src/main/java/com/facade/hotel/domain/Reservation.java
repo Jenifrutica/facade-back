@@ -38,7 +38,19 @@ public class Reservation {
                        LocalDate checkOut,
                        Season season,
                        BigDecimal roomCharge) {
-        this.id = UUID.randomUUID().toString();
+        this(UUID.randomUUID().toString(), guestName, guestEmail, guestDocument, room, checkIn, checkOut, season, roomCharge);
+    }
+
+    public Reservation(String id,
+                       String guestName,
+                       String guestEmail,
+                       String guestDocument,
+                       Room room,
+                       LocalDate checkIn,
+                       LocalDate checkOut,
+                       Season season,
+                       BigDecimal roomCharge) {
+        this.id = Objects.requireNonNull(id, "id");
         this.guestName = Objects.requireNonNull(guestName, "guestName");
         this.guestEmail = guestEmail;
         this.guestDocument = guestDocument;
@@ -49,6 +61,15 @@ public class Reservation {
         this.season = season;
         this.roomCharge = roomCharge;
         this.status = ReservationStatus.CREATED;
+    }
+
+    /**
+     * Rehydrates a persisted reservation with its saved lifecycle state.
+     */
+    public void restore(ReservationStatus status, String accessKey, Invoice invoice) {
+        this.status = status;
+        this.accessKey = accessKey;
+        this.invoice = invoice;
     }
 
     /**
